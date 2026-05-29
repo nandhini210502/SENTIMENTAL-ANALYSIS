@@ -1,98 +1,111 @@
 # 🎬 CineScope AI — Movie Review Sentiment Analyzer
 
-A beautiful, fully AI-powered sentiment analysis web app for movie reviews.
-Built with plain HTML + CSS + JavaScript. No frameworks, no build tools needed.
+CineScope AI is a premium, high-performance web application designed to analyze the emotional tone of movie reviews. Originally evolved from an API-dependent system, it has been refactored into a **zero-dependency, decoupled architecture** that utilizes a robust rule-based sentiment engine and sophisticated CSS-animated reaction scenes.
 
 ---
 
-## 🚀 Quick Start
+## 📖 Project Overview
 
-### Step 1 — Get your API Key
-1. Go to [console.anthropic.com](https://console.anthropic.com/)
-2. Sign up / log in
-3. Click **"API Keys"** → **"Create Key"**
-4. Copy the key (starts with `sk-ant-...`)
+The primary goal of CineScope AI is to provide instant, transparent, and visually engaging sentiment analysis for film criticism. Unlike generic analyzers, CineScope is specifically tuned for the nuances of movie reviews, handling complex sentence structures, negations, and emotional shifts.
 
-### Step 2 — Add your key to the file
-Open `index.html` and find this line near the top of the `<script>` section:
+The project features a **Dual-Mode Architecture**:
+1.  **Standalone Mode**: A pure "Single-File" experience (`cinescope_ai.html` or the frontend folder) where analysis happens entirely in the browser using localized JavaScript logic.
+2.  **System Mode**: A decoupled architecture with a **Python Flask Backend** for scalable API-based analysis.
 
-```javascript
-const API_KEY = 'YOUR_ANTHROPIC_API_KEY';
+---
+
+## ✨ Key Features
+
+### 🧠 Intelligent Sentiment Engine
+-   **Tri-Class Classification**: Categorizes reviews into **Positive**, **Negative**, or **Neutral**.
+-   **Weighted Segment Analysis**: Understands contrast words like *but*, *however*, and *yet* to weigh the "final verdict" of a review more heavily.
+-   **Negation Handling**: Accurately flips sentiment when words like *not*, *never*, or *didn't* are used (e.g., "not good" is detected as negative).
+-   **Intensifier Boosting**: Detects emphasis from words like *extremely*, *absolutely*, and *really* to adjust confidence scores.
+
+### 🎨 Premium UI/UX
+-   **Glassmorphism Dashboard**: A modern, translucent design with vibrant gradients and subtle micros-interactions.
+-   **Sentiment Vibe Visualizer**: Replaces external GIFs with high-performance, **Pure CSS/SVG Reaction Scenes** (😄, 😢, 🤔) that respond dynamically to the analysis.
+-   **Real-time Highlighting**: Automatically scans the review and highlights positive (green) and negative (red) trigger words.
+-   **Interactive Data Visualization**:
+    *   **Doughnut Chart**: Real-time distribution of all analyzed sentiments.
+    *   **Bar Chart**: Historical trend tracking of prediction confidence.
+
+### 🛠️ Comprehensive Functionality
+-   **Dark/Light Mode**: Full theme support with smooth transitions.
+-   **History Log**: Persistent session history showing the last 20 analyzed reviews.
+-   **Confidence Meter**: A visual representation of how certain the AI is about its prediction.
+-   **AI Explanation**: Generates a human-readable summary explaining *why* a certain sentiment was chosen.
+
+---
+
+## 📂 Project Structure
+
+```text
+SENTIMENTAL-ANALYSIS/
+├── cinescope/
+│   ├── backend/
+│   │   └── app.py            # Flask Server & Rule-based NLP Engine
+│   ├── frontend/
+│   │   ├── index.html        # Main Interactive Dashboard (Pure JS Mode)
+│   │   └── public/
+│   │       └── gifs/         # (Optional) Fallback assets
+│   └── requirements.txt      # Backend Dependencies (Flask, Flask-CORS)
+├── cinescope_ai.html         # Standalone All-in-One Version
+├── giphy.gif                 # Branding Asset
+└── README.md                 # Project Documentation (Current)
 ```
 
-Replace `YOUR_ANTHROPIC_API_KEY` with your actual key:
+---
 
-```javascript
-const API_KEY = 'sk-ant-api03-xxxxxxxxxxxxxxxxxx';
-```
+## 🚀 Installation & Execution
 
-### Step 3 — Open in browser
-Just double-click `index.html` — no server needed!
+### 🔹 Option 1: Standalone Frontend (Recommended for quick use)
+1.  Navigate to `cinescope/frontend/index.html` or uses the root `cinescope_ai.html`.
+2.  Open the file in any modern web browser.
+3.  **No installation required.**
 
-> 💡 **Tip:** Press `Ctrl + Enter` (or `Cmd + Enter` on Mac) inside the text area to analyze quickly.
+### 🔹 Option 2: Full-Stack (Backend API)
+1.  **Requirement**: Ensure Python 3.8+ is installed.
+2.  **Install Dependencies**:
+    ```bash
+    cd cinescope
+    pip install -r requirements.txt
+    ```
+3.  **Run the Server**:
+    ```bash
+    cd backend
+    python app.py
+    ```
+    The server will start on `http://localhost:5000`.
+4.  **API Usage**:
+    -   **Endpoint**: `POST /analyze`
+    -   **Payload**: `{ "review": "The movie was amazing!" }`
+    -   **Response**: Returns sentiment, confidence, positive/negative words, and an explanation.
 
 ---
 
-## ✨ Features
+## 🔍 Technical Implementation
 
-| Feature | Details |
-|---|---|
-| 🤖 AI Sentiment Analysis | Powered by Claude (claude-sonnet-4) |
-| 😊 😞 😐 Sentiment Labels | Positive / Negative / Neutral |
-| 📊 Confidence Score | 0–100% with animated meter |
-| 🎭 Animated GIFs | Auto-loads matching Giphy GIF |
-| 🌈 Word Highlights | Green = positive, Red = negative |
-| 💡 AI Explanation | One-sentence reason with key words |
-| 📈 Live Charts | Doughnut + Bar (Chart.js) |
-| 🕐 History Log | Last 20 reviews with scroll |
-| 🌙☀️ Dark/Light Mode | Toggle button, smooth transition |
-| ⌨️ Keyboard Shortcut | Ctrl/Cmd + Enter to analyze |
-| ✨ Star Background | Animated twinkling stars |
-| 📱 Responsive | Mobile + Desktop friendly |
+### The NLP Pipeline
+1.  **Text Preprocessing**: The input is normalized (lowercasing) and tokenized into individual words or segments.
+2.  **Segment Analysis**: The engine splits the text by contrast markers (like "but"). It applies a higher weight (1.3x) to segments appearing after a contrast word, as these often contain the reviewer's true conclusion.
+3.  **Word-Level Scoring**: 
+    -   Words are matched against a curated dictionary of **positive** and **negative** movie-specific tokens.
+    -   The engine checks the 1-2 words preceding a token to detect **negations** (flipping the score) or **intensifiers** (multiplying the score).
+4.  **Confidence Calculation**:
+    -   Confidence is derived from the ratio of positive/negative signals relative to the total word count and intensity.
+    -   Mixed reviews (high positive and high negative scores) are automatically classified as **Neutral** with a balanced explanation.
 
----
-
-## 📁 File Structure
-
-```
-cinescope/
-└── index.html     ← Single file — everything included!
-```
-
-No npm, no build step, no dependencies to install.
-Chart.js and Google Fonts load from CDN automatically.
+### Frontend Technologies
+-   **Tailwind-inspired CSS**: Custom glassmorphism variables.
+-   **Chart.js**: Powering the distribution and trend charts.
+-   **Canvas-Confetti**: Celebration effects triggered on positive detections.
+-   **Lottie-Web**: (Optional) Animation support ready for integration.
 
 ---
 
-## 🎨 Tech Stack
+## 🏁 Conclusion
 
-- **HTML5 + CSS3 + Vanilla JS** — no framework needed
-- **Claude API** — `claude-sonnet-4-20250514` for sentiment analysis
-- **Chart.js 4.4** — pie and bar charts
-- **Google Fonts** — Bebas Neue + DM Sans
-- **Giphy** — public GIF embeds
+CineScope AI demonstrates a sophisticated approach to sentiment analysis that prioritizes performance and user experience. By moving the logic to a rule-based engine and using CSS for visuals, the application remains lightweight, private, and extremely fast, while still providing deep insights into audience feedback.
 
----
-
-## 🛡️ Important Notes
-
-- Your API key is in the HTML file — **don't share this file publicly** or commit it to GitHub with the key in it.
-- For a production app, move the API call to a backend server so the key stays secret.
-- The app uses the **direct browser API access** header (`anthropic-dangerous-direct-browser-access: true`) which is fine for personal/local use.
-
----
-
-## 🎬 Sample Reviews to Try
-
-**Positive:**
-> "The film was absolutely breathtaking — stunning visuals, powerful acting, and a storyline that left me speechless. A true masterpiece!"
-
-**Negative:**
-> "Terrible movie. The plot was boring, the acting was wooden, and the ending was a complete disappointment. Don't waste your time."
-
-**Neutral:**
-> "The movie had some good moments and some bad ones. The visuals were decent but the story was average. Worth watching if you have nothing else to do."
-
----
-
-Made with ♥ using Claude AI
+*Developed for the Advanced Agentic Coding - Sentimental Analysis Project.*
